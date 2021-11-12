@@ -29,11 +29,11 @@ def extract_zip(zip_name, extract_path):
 def establish_connection(user, password, host, database):
     path = 'mysql+pymysql://' + user + ':' + password + '@' + host + '/' + database
     engine = create_engine(path)
-    print('Connection sucessfully established with engine', engine)
+    print('Connection successfully established with engine', engine)
     return engine
 
 
-# This fucntion extract the column name from MySQL table
+# This function extract the column name from MySQL table
 
 def sql_table_column(table, engine_name):
     col_names = [col["name"]
@@ -45,16 +45,16 @@ def sql_table_column(table, engine_name):
 # This function will transform the table
 
 def transform_table(table_name, file_path, engine_name):
-    Header = sql_table_column(table_name, engine_name)
+    header = sql_table_column(table_name, engine_name)
     path = file_path + table_name + ".csv"
     print("file path is ", path)
     # to read table
-    #data = pd.read_table(path, sep='|', names=Header, index_col=False)
+    data = pd.read_table(path, sep='|', names=header, index_col=False)
     # to read csv
-    data = pd.read_csv(path, sep=',', names=Header, index_col=False)
+    data = pd.read_csv(path, sep=',', names=header, index_col=False)
     data = data.dropna(how='all', axis='columns')
     print(data.head())
-    print('Table %s is tranformed' % (table_name))
+    print('Table %s is transformed' % table_name)
     return data
 
 
@@ -64,9 +64,9 @@ def insert_data_sql(data, sql_tablename, engine):
     print('Data is trying to insert for table ' + sql_tablename)
     try:
         with engine.connect() as conn, conn.begin():
-            data.to_sql(sql_tablename, conn, if_exists='append',
-                        index=False, index_label=True)
+            data.to_sql(sql_tablename, conn, if_exists='append', index=False, index_label=True)
+
     except Exception as e:
-        print('Data could not be inserted for table ' + e)
-    print('Data is inserted for table ', sql_tablename)
-    return
+        print('Data could not be inserted for table ', e)
+
+    return print('Data is inserted for table ', sql_tablename)
